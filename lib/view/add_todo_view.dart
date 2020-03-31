@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app/models/cardlist.dart';
+import 'package:todo_app/dao/moor_database.dart';
 
 final _textController = TextEditingController();
 final _descriptionController = TextEditingController();
@@ -13,45 +13,36 @@ class AddTodoView extends StatelessWidget {
           title: Text("Add a new Todo"),
         ),
         resizeToAvoidBottomPadding: true,
-        body: Consumer<CardList>(builder: (context, cardlist, _) {
-          return Stack(
-            fit: StackFit.expand,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    TextField(
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Enter a title'
-                      ),
-                      controller: _textController,
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Enter a description'
-                      ),
-                      maxLines: null,
-                      controller: _descriptionController,
-                    ),
-                  ],
-                ),
+        body: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  TextField(
+                    decoration: InputDecoration(
+                        border: InputBorder.none, hintText: 'Enter a title'),
+                    controller: _textController,
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Enter a description'),
+                    maxLines: null,
+                    controller: _descriptionController,
+                  ),
+                ],
               ),
-              BottomButtons(cardlist: cardlist),
-            ],
-          );
-        }
-        )
-    );
+            ),
+            BottomButtons(),
+          ],
+        ));
   }
 }
 
 class BottomButtons extends StatelessWidget {
-  final CardList cardlist;
-  BottomButtons({Key key, @required this.cardlist}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -66,9 +57,7 @@ class BottomButtons extends StatelessWidget {
                 width: 100,
                 height: 40,
                 decoration: BoxDecoration(
-                    color: Theme
-                        .of(context)
-                        .primaryColor,
+                    color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(6.0),
                     boxShadow: [
                       BoxShadow(
@@ -80,20 +69,20 @@ class BottomButtons extends StatelessWidget {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
-                      TodoTask newTask = TodoTask(
-                          cardlist.todoList.length,
-                          _textController.text,
-                          _descriptionController.text,
-                          false,
-                      );
-                      cardlist.addTodo(newTask);
+                      final tasks = Provider.of<AppDatabase>(context, listen: false);
+
+                      tasks.insertTask(Task(
+                        title: _textController.text,
+                        description: _descriptionController.text,
+                        completed: false,
+                      ));
+
                       _textController.clear();
                       _descriptionController.clear();
                       Navigator.pop(context);
                     },
                     child: Center(
-                      child: Text(
-                          "Save",
+                      child: Text("Save",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
@@ -103,15 +92,15 @@ class BottomButtons extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 10,),
+            SizedBox(
+              width: 10,
+            ),
             InkWell(
               child: Container(
                 width: 100,
                 height: 40,
                 decoration: BoxDecoration(
-                    color: Theme
-                        .of(context)
-                        .primaryColor,
+                    color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(6.0),
                     boxShadow: [
                       BoxShadow(
@@ -128,8 +117,7 @@ class BottomButtons extends StatelessWidget {
                       Navigator.pop(context);
                     },
                     child: Center(
-                      child: Text(
-                          "Cancel",
+                      child: Text("Cancel",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
@@ -145,4 +133,3 @@ class BottomButtons extends StatelessWidget {
     );
   }
 }
-

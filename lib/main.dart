@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/dao/moor_database.dart';
 import 'package:todo_app/view/home.dart';
 import 'package:provider/provider.dart';
-import 'models/cardlist.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => CardList(),
+    return Provider(
+      create: (context) => AppDatabase(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Todo App',

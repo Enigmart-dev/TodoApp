@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app/models/cardlist.dart';
+import 'package:todo_app/dao/moor_database.dart';
 import 'package:todo_app/view/add_todo_view.dart';
 
 class TodoHome extends StatelessWidget {
@@ -44,15 +44,16 @@ class TodoHome extends StatelessWidget {
 class TodoList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<CardList>(builder: (context, cardlist, _) {
-      return FutureBuilder<bool>(
-        future: Future.delayed(
-            Duration(seconds: 1), () => cardlist.initTodoListFromDb()),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+    return Consumer<AppDatabase>(builder: (context, db, _) {
+      return StreamBuilder<List<Task>>(
+        stream: db.watchAllTasks(),
+        builder: (BuildContext context, AsyncSnapshot<List<Task>> snapshot) {
+          final tasks = snapshot.data;
+
           if (snapshot.hasData) {
-            return cardlist.todoList.length > 0
+            return tasks.length > 0
                 ? ListView.builder(
-                    itemCount: cardlist.todoList.length,
+                    itemCount: tasks.length,
                     itemBuilder: (context, index) {
                       return Container(
                           padding: EdgeInsets.all(5.0),
@@ -79,8 +80,8 @@ class TodoList extends StatelessWidget {
                                             )),
                                             SizedBox(width: 8.0),
                                             Text(
-                                              cardlist.todoList[index].title +
-                                                  " id: ${cardlist.todoList[index].id}, index: $index",
+                                              tasks[index].title +
+                                                  " id: ${tasks[index].id}, index: $index",
                                               style: TextStyle(
                                                   fontSize: 19,
                                                   fontWeight: FontWeight.bold),
@@ -88,7 +89,7 @@ class TodoList extends StatelessWidget {
                                           ],
                                         ),
                                         Text(
-                                          cardlist.todoList[index]?.description,
+                                          tasks[index]?.description,
                                           style: TextStyle(fontSize: 14),
                                         ),
                                       ],
@@ -96,7 +97,7 @@ class TodoList extends StatelessWidget {
                                   ),
                                   Align(
                                     alignment: Alignment.topRight,
-                                    child: MoreButton(index: index),
+                                    child: MoreButton(task: tasks[index]),
                                   ),
                                 ],
                               ),
@@ -106,23 +107,21 @@ class TodoList extends StatelessWidget {
                             ],
                           ));
                     })
-                : Center(
-                    child: Text("No Todo inserted yet"),
-                  );
+                : Center(child: Text("No todos inserted yet"));
           } else {
             if (snapshot.hasError) {
-            return Center(
-              child: Text("Error: ${snapshot.error}"),
-            );
-          } else {
-            return Center(
-              child: SizedBox(
-                child: CircularProgressIndicator(),
-                width: 60,
-                height: 60,
-              ),
-            );
-          }
+              return Center(
+                child: Text("Error: ${snapshot.error}"),
+              );
+            } else {
+              return Center(
+                child: SizedBox(
+                  child: CircularProgressIndicator(),
+                  width: 60,
+                  height: 60,
+                ),
+              );
+            }
           }
         },
       );
@@ -131,9 +130,9 @@ class TodoList extends StatelessWidget {
 }
 
 class MoreButton extends StatefulWidget {
-  final int index;
+  final Task task;
 
-  MoreButton({Key key, this.index}) : super(key: key);
+  MoreButton({Key key, this.task}) : super(key: key);
 
   @override
   _MoreButtonState createState() => _MoreButtonState();
@@ -152,9 +151,8 @@ class _MoreButtonState extends State<MoreButton> {
                 iconSize: 22,
                 icon: Icon(Icons.delete),
                 onPressed: () {
-                  final model = Provider.of<CardList>(context, listen: false);
-                  model.deleteTodo(widget.index);
-                  print("Index deleted: ${widget.index}");
+                  final database = Provider.of<AppDatabase>(context, listen: false);
+                  database.deleteTask(widget.task);
                   setState(() {
                     isTouched = !isTouched;
                   });
