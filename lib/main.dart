@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/dao/moor_database.dart';
+import 'package:todo_app/database/moor_database.dart';
 import 'package:todo_app/view/home.dart';
 import 'package:provider/provider.dart';
 

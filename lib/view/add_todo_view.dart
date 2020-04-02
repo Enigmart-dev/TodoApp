@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app/dao/moor_database.dart';
+import 'package:todo_app/database/moor_database.dart';
 
 final _textController = TextEditingController();
 final _descriptionController = TextEditingController();
@@ -69,7 +69,8 @@ class BottomButtons extends StatelessWidget {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
-                      final tasks = Provider.of<AppDatabase>(context, listen: false);
+                      final tasks =
+                          Provider.of<AppDatabase>(context, listen: false);
 
                       tasks.insertTask(Task(
                         title: _textController.text,
