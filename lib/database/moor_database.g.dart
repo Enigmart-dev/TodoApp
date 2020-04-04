@@ -11,7 +11,7 @@ class Task extends DataClass implements Insertable<Task> {
   final int id;
   final String title;
   final String description;
-  final bool completed;
+  bool completed;
   Task(
       {@required this.id,
       @required this.title,

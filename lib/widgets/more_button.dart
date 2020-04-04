@@ -19,10 +19,10 @@ class _MoreButtonState extends State<MoreButton> {
     return isTouched
         ? Row(
       mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         IconButton(
-          iconSize: 22,
-          icon: Icon(Icons.delete),
+          icon: Icon(Icons.delete, size: 22),
           onPressed: () {
             final database = Provider.of<AppDatabase>(context, listen: false);
             database.deleteTask(widget.task);
@@ -32,17 +32,29 @@ class _MoreButtonState extends State<MoreButton> {
           },
         ),
         IconButton(
-          iconSize: 22,
-          icon: Icon(Icons.edit),
+          icon: widget.task.completed ? Icon(Icons.close, size: 22) : Icon(Icons.check, size: 22),
           onPressed: () {
-            isTouched = !isTouched;
+            final database = Provider.of<AppDatabase>(context, listen: false);
+            widget.task.completed = !widget.task.completed; 
+            database.updateTask(widget.task);
+            setState(() {
+              isTouched = !isTouched;
+            });
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.arrow_drop_down, size: 22),
+          onPressed: (){
+            setState(() {
+              isTouched = !isTouched;
+            });
           },
         )
       ],
     )
         : IconButton(
         iconSize: 25,
-        icon: Icon(Icons.more_vert),
+        icon: Icon(Icons.more_vert, size: 22),
         onPressed: () {
           setState(() {
             isTouched = !isTouched;

@@ -15,7 +15,9 @@ class TodoHome extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme
+            .of(context)
+            .primaryColor,
         title: Text(
           title,
           style: TextStyle(
@@ -25,11 +27,12 @@ class TodoHome extends StatelessWidget {
         ),
       ),
       body: Container(
-        padding: EdgeInsets.only(top: 10, bottom: 10),
         child: TodoList(),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme
+            .of(context)
+            .primaryColor,
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.push(
@@ -54,60 +57,78 @@ class TodoList extends StatelessWidget {
           if (snapshot.hasData) {
             return tasks.length > 0
                 ? ListView.builder(
-                    itemCount: tasks.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                          padding: EdgeInsets.all(5.0),
-                          width: MediaQuery.of(context).size.width,
-                          child: Column(
+                padding: EdgeInsets.only(top: 10, bottom: 10),
+                itemCount: tasks.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                      padding: EdgeInsets.all(5.0),
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      child: Column(
+                        children: <Widget>[
+                          Stack(
+                            fit: StackFit.loose,
                             children: <Widget>[
-                              Stack(
-                                fit: StackFit.loose,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 8.0, bottom: 8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 8.0, bottom: 8.0),
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Row(
                                       children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            Container(
-                                                child: Image.asset(
+                                        Container(
+                                            child: Image.asset(
                                               'res/images/dot.png',
                                               height: 7,
                                               width: 7,
                                             )),
-                                            SizedBox(width: 8.0),
-                                            Text(
-                                              tasks[index].title +
-                                                  " id: ${tasks[index].id}, index: $index",
-                                              style: TextStyle(
-                                                  fontSize: 19,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
+                                        SizedBox(width: 8.0),
                                         Text(
-                                          tasks[index]?.description,
-                                          style: TextStyle(fontSize: 14),
+                                          tasks[index].title,
+                                          style: TextStyle(
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                              decoration: tasks[index].completed
+                                                  ?
+                                              TextDecoration.lineThrough
+                                                  : TextDecoration.none,
+                                              decorationThickness: 2.5,
+                                              decorationColor: Colors.black
+                                          ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: MoreButton(task: tasks[index]),
-                                  ),
-                                ],
+                                    Text(
+                                      tasks[index]?.description,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          decoration: tasks[index].completed
+                                              ?
+                                          TextDecoration.lineThrough
+                                              : TextDecoration.none,
+                                          decorationThickness: 2.5,
+                                          decorationColor: Colors.black
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              Divider(
-                                color: Colors.grey,
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: MoreButton(task: tasks[index]),
                               ),
                             ],
-                          ));
-                    })
+                          ),
+                          Divider(
+                            color: Colors.grey,
+                          ),
+                        ],
+                      ));
+                })
                 : Center(child: Text("No todos inserted yet"));
           } else {
             if (snapshot.hasError) {
@@ -129,3 +150,4 @@ class TodoList extends StatelessWidget {
     });
   }
 }
+
