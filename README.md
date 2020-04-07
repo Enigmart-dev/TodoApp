@@ -2,4 +2,4 @@
 
 A simple todo App implemented with Provider
 
-![Insert](insert.gif) ![Delete](delete.gif)
+![Insert](insert.gif = 960x540) ![Delete](delete.gif = 960x540)
