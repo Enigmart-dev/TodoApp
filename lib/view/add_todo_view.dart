@@ -48,54 +48,10 @@ class BottomButtons extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomRight,
       child: Padding(
-        padding: EdgeInsets.only(bottom: 18.0, right: 8.0),
+        padding: EdgeInsets.only(bottom: 28.0, right: 18.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            InkWell(
-              child: Container(
-                width: 100,
-                height: 40,
-                decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(6.0),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Color(0x000000).withOpacity(.3),
-                          offset: Offset(0.0, 8.0),
-                          blurRadius: 8.0)
-                    ]),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {
-                      final tasks =
-                          Provider.of<AppDatabase>(context, listen: false);
-
-                      tasks.insertTask(Task(
-                        title: _textController.text,
-                        description: _descriptionController.text,
-                        completed: false,
-                      ));
-
-                      _textController.clear();
-                      _descriptionController.clear();
-                      Navigator.pop(context);
-                    },
-                    child: Center(
-                      child: Text("Save",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              letterSpacing: .7)),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
             InkWell(
               child: Container(
                 width: 100,
@@ -127,7 +83,51 @@ class BottomButtons extends StatelessWidget {
                   ),
                 ),
               ),
-            )
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            InkWell(
+              child: Container(
+                width: 100,
+                height: 40,
+                decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(6.0),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color(0x000000).withOpacity(.3),
+                          offset: Offset(0.0, 8.0),
+                          blurRadius: 8.0)
+                    ]),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      final tasks =
+                      Provider.of<AppDatabase>(context, listen: false);
+
+                      tasks.insertTask(Task(
+                        title: _textController.text,
+                        description: _descriptionController.text,
+                        completed: false,
+                      ));
+
+                      _textController.clear();
+                      _descriptionController.clear();
+                      Navigator.pop(context);
+                    },
+                    child: Center(
+                      child: Text("Save",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              letterSpacing: .7)),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

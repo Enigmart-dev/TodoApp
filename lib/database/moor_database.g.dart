@@ -151,7 +151,7 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   GeneratedTextColumn get title => _title ??= _constructTitle();
   GeneratedTextColumn _constructTitle() {
     return GeneratedTextColumn('title', $tableName, false,
-        minTextLength: 1, maxTextLength: 20);
+        minTextLength: 1, maxTextLength: 100);
   }
 
   final VerificationMeta _descriptionMeta =
@@ -162,7 +162,7 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
       _description ??= _constructDescription();
   GeneratedTextColumn _constructDescription() {
     return GeneratedTextColumn('description', $tableName, false,
-        minTextLength: 1, maxTextLength: 40);
+        minTextLength: 0, maxTextLength: 200);
   }
 
   final VerificationMeta _completedMeta = const VerificationMeta('completed');

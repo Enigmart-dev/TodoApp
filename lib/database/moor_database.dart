@@ -8,11 +8,11 @@ class Tasks extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get title => text().withLength(
       min: 1,
-      max: 20,
+      max: 100,
   )();
   TextColumn get description => text().withLength(
     min: 1,
-    max: 40
+    max: 200
   )();
   BoolColumn get completed => boolean().withDefault(Constant(false))();
 }
