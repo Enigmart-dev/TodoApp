@@ -2,4 +2,4 @@
 
 A simple todo App implemented with Provider
 
-<img src="insert.gif" width="480" height="640" /> <img src="delete.gif" width="480" height="640" />
+<img src="insert.gif" width="300" height="720" /> <img src="delete.gif" width="300" height="720" />
