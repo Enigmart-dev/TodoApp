@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/database/moor_database.dart';
+import 'package:todo_app/view/add_todo_view.dart';
 
 class MoreButton extends StatefulWidget {
   final Task task;
@@ -36,6 +37,28 @@ class _MoreButtonState extends State<MoreButton> {
           onPressed: () {
             final database = Provider.of<AppDatabase>(context, listen: false);
             widget.task.completed = !widget.task.completed; 
+            database.updateTask(widget.task);
+            setState(() {
+              isTouched = !isTouched;
+            });
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.edit),
+          onPressed: () {
+            final database = Provider.of<AppDatabase>(context, listen: false);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AddTodoView(
+                task: widget.task,
+                textController: TextEditingController(
+                  text: widget.task.title,
+                ),
+                descriptionController: TextEditingController(
+                  text: widget.task.description,
+                ),
+              )),
+            );
             database.updateTask(widget.task);
             setState(() {
               isTouched = !isTouched;

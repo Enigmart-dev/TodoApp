@@ -2,10 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/database/moor_database.dart';
 
-final _textController = TextEditingController();
-final _descriptionController = TextEditingController();
+class AddTodoView extends StatefulWidget {
 
-class AddTodoView extends StatelessWidget {
+  //if it's not null, it means it's modifying an already existing task
+  Task task;
+
+  TextEditingController textController;
+  TextEditingController descriptionController;
+
+  AddTodoView({
+    Key key,
+    this.task,
+    this.textController,
+    this.descriptionController
+  }) : super(key: key);
+
+  @override
+  _AddTodoViewState createState() => _AddTodoViewState();
+}
+
+class _AddTodoViewState extends State<AddTodoView> {
+
+  @override
+  void initState() {
+    super.initState();
+    if(widget.textController == null) widget.textController = TextEditingController();
+    if(widget.descriptionController == null) widget.descriptionController = TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,25 +48,40 @@ class AddTodoView extends StatelessWidget {
                   TextField(
                     decoration: InputDecoration(
                         border: InputBorder.none, hintText: 'Enter a title'),
-                    controller: _textController,
+                    controller: widget.textController,
                   ),
                   TextField(
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Enter a description'),
                     maxLines: null,
-                    controller: _descriptionController,
+                    controller: widget.descriptionController,
                   ),
                 ],
               ),
             ),
-            BottomButtons(),
+            BottomButtons(
+              task: widget.task == null ? null : widget.task,
+              textController: widget.textController,
+              descriptionController: widget.descriptionController,
+            ),
           ],
         ));
   }
 }
 
 class BottomButtons extends StatelessWidget {
+
+  final Task task;
+  final TextEditingController textController;
+  final TextEditingController descriptionController;
+
+  const BottomButtons({
+    Key key,
+    this.textController,
+    this.descriptionController,
+    this.task}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -69,8 +108,8 @@ class BottomButtons extends StatelessWidget {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
-                      _textController.clear();
-                      _descriptionController.clear();
+                      textController.clear();
+                      descriptionController.clear();
                       Navigator.pop(context);
                     },
                     child: Center(
@@ -107,14 +146,24 @@ class BottomButtons extends StatelessWidget {
                       final tasks =
                       Provider.of<AppDatabase>(context, listen: false);
 
-                      tasks.insertTask(Task(
-                        title: _textController.text,
-                        description: _descriptionController.text,
-                        completed: false,
-                      ));
 
-                      _textController.clear();
-                      _descriptionController.clear();
+                      if(task == null) {
+                        tasks.insertTask(Task(
+                          title: textController.text,
+                          description: descriptionController.text,
+                          completed: false,
+                        ));
+                      } else {
+                        tasks.updateTask(Task(
+                          id: task.id,
+                          title: textController?.text,
+                          description: descriptionController?.text,
+                          completed: task.completed
+                        ));
+                      }
+
+                      textController.clear();
+                      descriptionController.clear();
                       Navigator.pop(context);
                     },
                     child: Center(
